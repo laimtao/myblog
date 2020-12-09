@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lmt.dao.TypeDao">
+
+
+    <!--两个id可能会相冲，取别名即可-->
+    <resultMap id="type" type="com.lmt.domain.Type">
+        <id property="id" column="tid"/>
+        <result property="name" column="name"/>
+        <collection property="blogs" ofType="com.lmt.domain.Blog">
+            <id property="id" column="bid"/>
+            <result property="title" column="title"/>
+            <result property="typeId" column="type_id"/>
+        </collection>
+    </resultMap>
+
+    <select id="getBlogType" resultMap="type">
+        select t.id tid, t.name, b.id bid, b.title, b.type_id
+        from t_type t, t_blog b
+        where t.id = b.type_id
+    </select>
+
+
+
+</mapper>

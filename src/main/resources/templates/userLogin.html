@@ -1,0 +1,205 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户登录</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="/lib/editormd/css/editormd.min.css">
+    <link rel="stylesheet" href="/css/me.css">
+    <style>
+        html { height: 96%; overflow: auto; }
+        body { min-height: 96%; }
+        footer {
+            position:absolute !important;;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body class="login-bg">
+
+<br>
+<br>
+<br>
+<div class="m-container-small m-padded-tb-massive" style="max-width: 30em !important;">
+    <div class="ur container">
+        <div class="ui middle aligned center aligned grid">
+            <div class="column">
+                <h2 class="ui teal image header">
+                    <div class="content">
+                        用户登录
+                    </div>
+                </h2>
+
+                <form class="ui large form" method="post" th:action="@{/user/login}">
+                    <input name="path" value="/" type="hidden">
+                    <div class="ui  segment">
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                <input type="text" name="username" value="" placeholder="用户名">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" name="password" placeholder="密码">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="text" name="checkCode" placeholder="请输入验证码">
+                                <div>
+                                    <a href="javascript:refreshCode();">
+                                        <img src="/checkCode" title="看不清点击刷新" id="vcode"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="ui fluid large teal submit button">登 录</button>
+                    </div>
+
+                    <div class="ui error mini message"></div>
+                    <div class="ui mini negative message" th:text="${msg}">用户名和密码错误</div>
+                    <span>没有账户？<a th:href="@{/register}">立即注册</a></span>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/jquery.scrollto@2.1.2/jquery.scrollTo.min.js"></script>
+<script src="/lib/prism/prism.js"></script>
+<script src="/lib/tocbot/tocbot.min.js"></script>
+<script src="/lib/qrcode/qrcode.min.js"></script>
+<script src="/lib/waypoints/jquery.waypoints.min.js"></script>
+<script src="/lib/editormd/editormd.min.js"></script>
+<script>
+    $('#newblog-container').load(/*/footer/newblog*/"/footer/newblog");
+</script>
+<script>
+    $('.ui.dropdown').dropdown({
+        on: 'hover'
+    });
+</script>
+<script>
+    function refreshCode(){
+        //1.获取验证码图片对象
+        var vcode = document.getElementById("vcode");
+
+        //2.设置其src属性，加时间戳
+        vcode.src = "/checkCode?time="+new Date().getTime();
+    }
+</script>
+<!--记录网站运行时间-->
+<!--<script>
+    function secondToDate(second) {
+        if (!second) {
+            return 0;
+        }
+        var time = new Array(0, 0, 0, 0, 0);
+        if (second >= 365 * 24 * 3600) {
+            time[0] = parseInt(second / (365 * 24 * 3600));
+            second %= 365 * 24 * 3600;
+        }
+        if (second >= 24 * 3600) {
+            time[1] = parseInt(second / (24 * 3600));
+            second %= 24 * 3600;
+        }
+        if (second >= 3600) {
+            time[2] = parseInt(second / 3600);
+            second %= 3600;
+        }
+        if (second >= 60) {
+            time[3] = parseInt(second / 60);
+            second %= 60;
+        }
+        if (second > 0) {
+            time[4] = second;
+        }
+        return time;
+    }
+
+    function setTime() {
+        /*此处为网站的创建时间*/
+        var create_time = Math.round(new Date(Date.UTC(2020, 0, 1, 0, 0, 0)).getTime() / 1000);
+        var timestamp = Math.round((new Date().getTime() + 8 * 60 * 60 * 1000) / 1000);
+        currentTime = secondToDate((timestamp - create_time));
+        currentTimeHtml = '本站已运行：' + currentTime[0] + '年' + currentTime[1] + '天'
+            + currentTime[2] + '时' + currentTime[3] + '分' + currentTime[4]
+            + '秒';
+        document.getElementById("htmer_time").innerHTML = currentTimeHtml;
+    }
+
+    setInterval(setTime, 1000);
+</script>-->
+<!--
+<script>
+    //点赞/取消点赞
+    function thumbsUp(blogId,obj) {
+        var title=$(obj).attr('title');
+        var flag=(title=="点赞");
+        $.ajax({
+            url: "/thumbsUp",    //请求的url地址
+            async: false,//请求是否异步，默认为异步，这也是ajax重要特性
+            data: {
+                "blogId": blogId,
+                "flag":flag
+            },    //参数值
+            type: "post",   //请求方式
+            success: function (data) {
+                if(data=="success"){
+                    if(flag==true){
+                        $(obj).find('i').attr('class','thumbs up teal icon');
+                        $(obj).attr('title','取消点赞');
+                        var text=$(obj).find('span').text()*1+1;
+                        $(obj).find('span').html(text);
+                    }else{
+                        $(obj).find('i').attr('class','thumbs up outline icon');
+                        $(obj).attr('title','点赞');
+                        var text=$(obj).find('span').text()*1-1;
+                        $(obj).find('span').html(text);
+                    }
+                }else if(data=="toLogin"){
+                    alert("您需要登录才能点赞！");
+                }else{
+                    alert("系统错误！")
+                }
+            }
+        });
+    }
+</script>
+-->
+
+
+<script>
+    $('.ui.form').form({
+        fields: {
+            username: {
+                identifier: 'username',
+                rules: [{
+                    type: 'empty',
+                    prompt: '请输入用户名'
+                }]
+            },
+            password: {
+                identifier: 'password',
+                rules: [{
+                    type: 'empty',
+                    prompt: '请输入密码'
+                }]
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
